@@ -1,0 +1,6 @@
+.build/
+.DS_Store
+dist/
+Windows/**/bin/
+Windows/**/obj/
+*.user

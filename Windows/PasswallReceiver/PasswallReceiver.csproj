@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <AssemblyName>PasswallReceiver</AssemblyName>
+    <RootNamespace>PasswallReceiver</RootNamespace>
+    <ApplicationIcon>..\Passwall.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../PasswallReceiver.Watchdog/PasswallReceiver.Watchdog.csproj"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  <Target Name="CopyWatchdogArtifacts" AfterTargets="Build">
+    <ItemGroup>
+      <WatchdogArtifact Include="../PasswallReceiver.Watchdog/bin/$(Configuration)/$(TargetFramework)/PasswallReceiver.Watchdog.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(WatchdogArtifact)" DestinationFolder="$(TargetDir)" />
+  </Target>
+</Project>

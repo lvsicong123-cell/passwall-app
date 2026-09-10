@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - name: Test Swift packages
+        run: swift test
+      - name: Build and package macOS app
+        run: ./script/build_and_run.sh --package
+      - name: Verify macOS archive
+        run: cd dist && shasum -a 256 -c Passwall.zip.sha256
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Passwall-macOS-unsigned
+          path: |
+            dist/Passwall.zip
+            dist/Passwall.zip.sha256
+
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+      - name: Run receiver checks
+        run: dotnet run --project Windows\PasswallReceiver.Checks\PasswallReceiver.Checks.csproj -c Release
+      - name: Build receiver
+        run: dotnet build Windows\PasswallReceiver\PasswallReceiver.csproj -c Release --nologo
+      - name: Package Windows receiver
+        shell: powershell
+        run: .\Windows\package-release.ps1
+      - name: Verify Windows archive
+        shell: powershell
+        run: |
+          $archive = "dist\Passwall-Windows-win-x64.zip"
+          $expected = (Get-Content "$archive.sha256").Split()[0]
+          $actual = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "Windows archive checksum mismatch" }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Passwall-Windows-win-x64-unsigned
+          path: |
+            dist/Passwall-Windows-win-x64.zip
+            dist/Passwall-Windows-win-x64.zip.sha256

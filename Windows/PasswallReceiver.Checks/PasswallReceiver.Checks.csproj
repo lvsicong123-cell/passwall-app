@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../PasswallReceiver/Core/IInputSink.cs" Link="IInputSink.cs" />
+    <Compile Include="../PasswallReceiver/Core/InputInjector.cs" Link="InputInjector.cs" />
+    <Compile Include="../PasswallReceiver/Core/KeyboardScanCode.cs" Link="KeyboardScanCode.cs" />
+    <Compile Include="../PasswallReceiver/Core/HorizontalNavigationTracker.cs" Link="HorizontalNavigationTracker.cs" />
+    <Compile Include="../PasswallReceiver/Core/BonjourAdvertisement.cs" Link="BonjourAdvertisement.cs" />
+    <Compile Include="../PasswallReceiver/Core/BulkProtocol.cs" Link="BulkProtocol.cs" />
+    <Compile Include="../PasswallReceiver/Core/BulkSession.cs" Link="BulkSession.cs" />
+    <Compile Include="../PasswallReceiver/Core/BulkTransferRegistry.cs" Link="BulkTransferRegistry.cs" />
+    <Compile Include="../PasswallReceiver/Core/ClipboardContent.cs" Link="ClipboardContent.cs" />
+    <Compile Include="../PasswallReceiver/Core/FileTransferManifest.cs" Link="FileTransferManifest.cs" />
+    <Compile Include="../PasswallReceiver/Core/FileTransferBatch.cs" Link="FileTransferBatch.cs" />
+    <Compile Include="../PasswallReceiver/Core/FileTransferStaging.cs" Link="FileTransferStaging.cs" />
+    <Compile Include="../PasswallReceiver/Core/ReceiverPreferences.cs" Link="ReceiverPreferences.cs" />
+    <Compile Include="../PasswallReceiver/Core/ReceiverLog.cs" Link="ReceiverLog.cs" />
+    <Compile Include="../PasswallReceiver/Core/IClipboardBridge.cs" Link="IClipboardBridge.cs" />
+    <Compile Include="../PasswallReceiver/Core/PairingChallenge.cs" Link="PairingChallenge.cs" />
+    <Compile Include="../PasswallReceiver/Core/ProtocolContract.cs" Link="ProtocolContract.cs" />
+    <Compile Include="../PasswallReceiver/Core/TlsPairingListener.cs" Link="TlsPairingListener.cs" />
+    <Compile Include="../PasswallReceiver/Core/WindowsTrustedPeerStore.cs" Link="WindowsTrustedPeerStore.cs" />
+    <Compile Include="../PasswallReceiver/Core/WindowsDeviceIdentity.cs" Link="WindowsDeviceIdentity.cs" />
+    <Compile Include="../PasswallReceiver/Core/ReceiverSession.cs" Link="ReceiverSession.cs" />
+    <Compile Include="../PasswallReceiver/Core/RemoteReturnDetector.cs" Link="RemoteReturnDetector.cs" />
+    <Compile Include="../PasswallReceiver/Core/SessionMessageGuard.cs" Link="SessionMessageGuard.cs" />
+    <Compile Include="../PasswallReceiver/Core/WatchdogInputState.cs" Link="WatchdogInputState.cs" />
+    <Compile Include="../PasswallReceiver/Core/WatchdogSession.cs" Link="WatchdogSession.cs" />
+    <Compile Include="../PasswallReceiver/Interop/NativeInput.cs" Link="NativeInput.cs" />
+  </ItemGroup>
+</Project>
