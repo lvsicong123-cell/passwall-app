@@ -2,6 +2,17 @@
 
 [English](README.md)
 
+## 下载并安装
+
+### [下载 Windows 接收端 · 安装 EXE](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall-Setup.exe)
+Windows 11 x64，包含 .NET 运行时。双击安装，无需解压或手动运行命令。
+
+### [下载 Mac 客户端 · 安装 PKG](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall.pkg)
+Apple Silicon，macOS 14+。双击按系统向导安装到“应用程序”。
+
+[版本说明及校验文件](https://github.com/lvsicong123-cell/passwall-app/releases/tag/v0.1.1)
+· 两台电脑各安装对应客户端，再在下方完成首次配对。
+
 **用 MacBook 的触控板和键盘，控制旁边的 Windows。**
 
 不用来回换键鼠，保留熟悉的 Mac 操作习惯。Passwall 通过可信局域网连接两台
@@ -11,31 +22,24 @@
 <img src="Assets/PasswallIcon.png" alt="Passwall 应用图标" width="96" height="96">
 
 > [!WARNING]
-> `v0.1.0` 是免费开源的 Public Alpha，不是全环境验证的稳定版。
+> `v0.1.1` 是免费开源的 Public Alpha，不是全环境验证的稳定版。
 > Mac 包仅有本地 ad-hoc 签名，没有 Apple Developer ID 签名或公证；Windows
 > 程序没有 Authenticode 签名。首次打开可能被系统拦截。只在你信任的设备和
 > 局域网中试用，不要为安装本软件关闭系统安全防护。
 
-## 下载
-
-公开发布后，请从本仓库的 **Releases** 页面下载同一版本的两个程序包及校验文件。
-如果还没有 Release，说明安装包尚未公开。
-
-| 文件 | 用途 |
-| --- | --- |
-| `Passwall.zip` | Apple Silicon Mac，macOS 14+ |
-| `Passwall.zip.sha256` | Mac 包的 SHA-256 校验文件 |
-| `Passwall-Windows-win-x64.zip` | Windows 11 x64，已包含 .NET 运行时 |
-| `Passwall-Windows-win-x64.zip.sha256` | Windows 包的 SHA-256 校验文件 |
-
 GitHub 的 `Source code (zip)` / `Source code (tar.gz)` 是源码，不是安装包。
 当前 Mac 候选包不是 Universal 包，不提供已验证的 Intel Mac 下载版本。
+安装包的 CI 安装检查不等于普通用户首次下载、安全提示、真机输入和重启恢复验收；
+这批新安装包的上述真机项目仍为 **NOT RUN**。
 
 ## 首次使用
 
-1. **Windows：**解压整个 Windows ZIP 到固定文件夹，打开 `PasswallReceiver.exe`。
-   保留同目录全部文件，包括 Watchdog；接收端会驻留系统托盘。
-2. **Mac：**解压 Mac ZIP，把 `Passwall.app` 拖到“应用程序”文件夹并打开。
+1. **Windows：**双击 `Passwall-Setup.exe`，按向导安装。桌面快捷方式默认勾选，
+   登录启动可选。完成后打开 Passwall Receiver，接收端会驻留系统托盘。
+   更新或卸载前先结束传输，从托盘退出接收端；安装器不会强杀运行中的程序。
+2. **Mac：**双击 `Passwall.pkg`，按向导安装；系统可能要求管理员确认。
+   从“应用程序”打开 Passwall。升级前先退出旧版；若旧版在其他文件夹，之后
+   请改用“应用程序”里的版本，避免打开两份。
    按提示在“系统设置 → 隐私与安全性 → 辅助功能”中允许 Passwall；若系统询问
    本地网络权限，仅在你信任该应用和网络时允许。
 3. **连接：**让两台设备处于同一可信局域网，在 Mac 中选择发现的 Windows，
@@ -62,16 +66,16 @@ GitHub 的 `Source code (zip)` / `Source code (tar.gz)` 是源码，不是安装
 
 ### 校验下载
 
-将 ZIP 和对应 `.sha256` 放在同一目录，在该目录运行。Mac：
+校验是可选的高级检查，不是安装命令。将安装包和对应 `.sha256` 放在同一目录。Mac：
 
 ```bash
-shasum -a 256 -c Passwall.zip.sha256
+shasum -a 256 -c Passwall.pkg.sha256
 ```
 
 Windows PowerShell：
 
 ```powershell
-$archive = "Passwall-Windows-win-x64.zip"
+$archive = "Passwall-Setup.exe"
 $expected = (Get-Content "$archive.sha256" -Raw).Trim().Split()[0]
 $actual = (Get-FileHash $archive -Algorithm SHA256).Hash
 if ($actual -ne $expected) { throw "SHA-256 mismatch. Do not install." }
@@ -85,23 +89,12 @@ Write-Host "SHA-256 OK"
 Mac 可在 Passwall 设置中选择登录时启动。卸载前关闭该选项并退出应用，再将
 `Passwall.app` 移到废纸篓。
 
-Windows 如需安装到当前用户的 Local AppData、创建桌面快捷方式并登录启动，
-在解压目录中打开普通 PowerShell，运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install-startup.ps1
-```
-
-卸载时使用同一脚本：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install-startup.ps1 -Uninstall
-```
-
-这里的执行策略参数仅作用于该 PowerShell 进程，不是修改全局策略。
-脚本会停止接收端；请先结束控制和传输。若权限不足，请保留错误反馈，
-不要反复以管理员身份重装。卸载不等于删除所有设置、信任记录或已接收文件，
-参见[隐私说明](PRIVACY.md)。
+Windows 安装到当前用户的 `%LOCALAPPDATA%\Passwall\App`，无需管理员权限。
+重新运行安装器可调整“登录启动”；卸载使用“设置 → 应用 → 已安装的应用 →
+Passwall Receiver → 卸载”，或开始菜单中的卸载入口。不需要运行 PowerShell。
+安装器内部的 PowerShell 辅助检查仅使用进程级执行策略，不修改全局设置，
+也不覆盖组织组策略；策略不允许时会报错停止。
+卸载保留设置、信任记录、收到的文件和非程序文件，参见[隐私说明](PRIVACY.md)。
 
 ## 功能
 
@@ -143,6 +136,7 @@ Mac 源码构建需要 Swift 6 工具链和 macOS SDK，包按构建机器的架
 swift test
 swift build
 ./script/build_and_run.sh --package
+bash script/package-macos-installer.sh
 (cd dist && shasum -a 256 -c Passwall.zip.sha256)
 ```
 
@@ -157,6 +151,7 @@ dotnet build Windows\PasswallReceiver\PasswallReceiver.csproj -c Release
 powershell -ExecutionPolicy Bypass -File .\Windows\package-release.ps1
 ```
 
+Windows 打包需先安装 NSIS 3（CI 固定使用 3.12）。
 Windows 归档默认包含 .NET 运行时。仅在需要更小的开发包时使用
 `-FrameworkDependent`，此时目标机器必须已安装 .NET 8 Runtime。
 

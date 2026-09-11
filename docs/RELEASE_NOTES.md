@@ -1,4 +1,33 @@
-# Passwall v0.1.0 Public Alpha
+# Passwall Release Notes
+
+## v0.1.1 Public Alpha
+
+### 中文
+
+- [Windows 接收端安装器](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall-Setup.exe)：
+  Windows 11 x64，内置运行时，双击安装。提供快捷方式、可选登录启动和系统卸载入口。
+- [Mac 客户端安装器](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall.pkg)：
+  Apple Silicon / macOS 14+，使用系统向导安装到“应用程序”。
+- 两端安装同一版本。安装后按[中文说明](../README.zh-CN.md)授权和配对。
+- 核心控制和通信功能未改变。更新/卸载前先结束传输并退出接收端；保留用户数据。
+- 安装器简化步骤，不消除系统安全确认。Mac 没有 Developer ID 签名或公证，
+  Windows 没有 Authenticode 签名。不要关闭系统防护或绕过组织策略。
+- CI 安装/升级/卸载与真机验收不同：这批新安装包的首次下载 GUI 安装、安全提示、
+  键鼠/剪贴板/文件及 UAC/重启恢复仍为 **NOT RUN**。
+
+### English
+
+Download [Windows Setup](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall-Setup.exe)
+or the [Mac PKG](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall.pkg).
+Windows 11 x64 includes the runtime, per-user shortcuts, optional login startup
+and Apps uninstall. Apple Silicon macOS 14+ installs through the system wizard
+to Applications. Use the same version on both devices and follow the [guide](../README.md).
+Core input/protocol behavior is unchanged. Quit before upgrade/uninstall; user
+data is preserved. Unsigned Alpha: no Developer ID/notarization or Authenticode.
+Do not disable protection or bypass organization policy. CI lifecycle checks
+are not fresh hardware or first-download GUI acceptance; those remain **NOT RUN**.
+
+## v0.1.0 Public Alpha
 
 ## 中文
 

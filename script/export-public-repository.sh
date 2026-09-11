@@ -25,6 +25,11 @@ PUBLIC_FILES=(
   .github/workflows/ci.yml
   docs/PUBLIC_AUDIT.md
   docs/RELEASE_NOTES.md
+  Windows/installer.nsi
+  Windows/installer-lifecycle.ps1
+  Windows/test-installer.ps1
+  script/package-macos-installer.sh
+  script/macos-components.plist
 )
 
 for path in "${ROOT_FILES[@]}" "${PUBLIC_FILES[@]}"; do

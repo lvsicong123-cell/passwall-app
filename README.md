@@ -2,6 +2,17 @@
 
 [简体中文](README.zh-CN.md)
 
+## Download And Install
+
+### [Download Windows Receiver · Setup EXE](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall-Setup.exe)
+Windows 11 x64, runtime included. Open the installer; no extraction or commands.
+
+### [Download Mac Client · Installer PKG](https://github.com/lvsicong123-cell/passwall-app/releases/download/v0.1.1/Passwall.pkg)
+Apple Silicon, macOS 14+. Follow the system installer to install in Applications.
+
+[Release notes and checksums](https://github.com/lvsicong123-cell/passwall-app/releases/tag/v0.1.1).
+Install the matching client on each computer, then pair them below.
+
 **Use your MacBook trackpad and keyboard on the Windows PC beside it.**
 
 Keep your familiar Mac input workflow instead of swapping keyboards and mice.
@@ -12,35 +23,27 @@ It is not a remote desktop: Windows keeps its own display; no screen video is se
 <img src="Assets/PasswallIcon.png" alt="Passwall app icon" width="96" height="96">
 
 > [!WARNING]
-> `v0.1.0` is a free, open-source Public Alpha, not a broadly validated stable release.
+> `v0.1.1` is a free, open-source Public Alpha, not a broadly validated stable release.
 > The Mac package is locally ad-hoc signed, without Apple Developer ID signing or
 > notarization. Windows executables have no Authenticode signature. Your system
 > may block first launch. Use only trusted devices and networks; do not disable
 > system security protections to install Passwall.
 
-## Download
-
-Once published, download both apps at the same version and their checksum files
-from this repository's **Releases** page. If no release is listed, packages have
-not been published yet.
-
-| File | Purpose |
-| --- | --- |
-| `Passwall.zip` | Apple Silicon Mac, macOS 14+ |
-| `Passwall.zip.sha256` | Mac archive SHA-256 checksum |
-| `Passwall-Windows-win-x64.zip` | Windows 11 x64, .NET runtime included |
-| `Passwall-Windows-win-x64.zip.sha256` | Windows archive SHA-256 checksum |
-
 GitHub's `Source code (zip)` / `Source code (tar.gz)` downloads are source,
 not app packages. The current Mac candidate is not Universal; there is no
 verified Intel Mac download.
+CI installation checks are not first-download security-prompt or physical
+input/restart acceptance. These checks on the new installers remain **NOT RUN**.
 
 ## First Use
 
-1. **Windows:** extract the entire Windows ZIP into a permanent folder and open
-   `PasswallReceiver.exe`. Keep all adjacent files, including the Watchdog.
-   The receiver stays in the notification area.
-2. **Mac:** extract the Mac ZIP, move `Passwall.app` to Applications, and open it.
+1. **Windows:** open `Passwall-Setup.exe` and follow the wizard. Desktop shortcut
+   is selected by default; login startup is optional. Open Passwall Receiver
+   after setup; it stays in the notification area. Finish transfers and quit
+   from the tray before upgrading or uninstalling; setup never force-kills it.
+2. **Mac:** open `Passwall.pkg` and follow the installer, which may ask for
+   administrator approval. Open Passwall from Applications. Quit the old version
+   before upgrading; if it lives elsewhere, use the new Applications copy afterward.
    Allow Passwall under System Settings > Privacy & Security > Accessibility.
    If asked for Local Network access, allow only if you trust the app and network.
 3. **Pair:** connect both devices to the same trusted LAN, select the discovered
@@ -72,16 +75,17 @@ verified Intel Mac download.
 
 ### Verify Downloads
 
-Put the ZIP and checksum in the same directory and run there. On the Mac:
+Optional advanced check, not an installation command: put the installer and its
+checksum in the same directory. On the Mac:
 
 ```bash
-shasum -a 256 -c Passwall.zip.sha256
+shasum -a 256 -c Passwall.pkg.sha256
 ```
 
 In Windows PowerShell:
 
 ```powershell
-$archive = "Passwall-Windows-win-x64.zip"
+$archive = "Passwall-Setup.exe"
 $expected = (Get-Content "$archive.sha256" -Raw).Trim().Split()[0]
 $actual = (Get-FileHash $archive -Algorithm SHA256).Hash
 if ($actual -ne $expected) { throw "SHA-256 mismatch. Do not install." }
@@ -96,24 +100,14 @@ not replace a trusted source, signing, or a security review.
 On the Mac, login startup is optional in Settings. Disable it and quit the app
 before moving `Passwall.app` to the Trash.
 
-On Windows, optionally install to Local AppData, create a desktop shortcut,
-and enable login startup from a normal PowerShell window in the extracted folder:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install-startup.ps1
-```
-
-To uninstall, use the same script:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install-startup.ps1 -Uninstall
-```
-
-The execution-policy option affects this PowerShell process, not global policy.
-The script stops the receiver; finish input sharing and transfers first. If
-permission is denied, report the error instead of repeatedly reinstalling as
-administrator. Uninstall does not erase all settings, trust records, or received
-files; see [Privacy](PRIVACY.md).
+Windows installs to `%LOCALAPPDATA%\Passwall\App` for the current user, without
+admin rights. Re-run setup to change login startup. Uninstall from Settings >
+Apps > Installed apps > Passwall Receiver, or its Start menu uninstall shortcut.
+No manual PowerShell commands are needed. Internal helper checks use a
+process-only execution policy, never change global settings, and cannot override
+organization Group Policy. Policy failures stop installation.
+Settings, trust records, received files and unknown files are preserved;
+see [Privacy](PRIVACY.md).
 
 ## Features
 
@@ -158,6 +152,7 @@ On macOS:
 swift test
 swift build
 ./script/build_and_run.sh --package
+bash script/package-macos-installer.sh
 (cd dist && shasum -a 256 -c Passwall.zip.sha256)
 ```
 
@@ -172,6 +167,7 @@ dotnet build Windows\PasswallReceiver\PasswallReceiver.csproj -c Release
 powershell -ExecutionPolicy Bypass -File .\Windows\package-release.ps1
 ```
 
+Install NSIS 3 before running Windows packaging (CI pins 3.12).
 The Windows package is self-contained by default. Use `-FrameworkDependent`
 only to create a smaller development package that requires the .NET 8 Runtime.
 

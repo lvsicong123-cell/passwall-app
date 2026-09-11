@@ -6,7 +6,15 @@ change between minor releases.
 
 ## [Unreleased]
 
-## [0.1.0] - Unreleased
+## [0.1.1] - 2026-09-11
+
+- Add separate Windows Setup EXE and macOS PKG with direct download links.
+- Add current-user Windows shortcuts, optional login startup, and Apps uninstall.
+- Preserve user data and refuse installation while the receiver is running.
+- Verify installer payloads and install/upgrade/uninstall on disposable CI runners.
+- Installers remain unsigned; new physical and first-download GUI acceptance is NOT RUN.
+
+## [0.1.0] - 2026-09-11
 
 ### Added
 

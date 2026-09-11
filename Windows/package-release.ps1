@@ -33,7 +33,9 @@ if ($FrameworkDependent) {
 }
 
 dotnet publish (Join-Path $PSScriptRoot "PasswallReceiver\PasswallReceiver.csproj") @publishOptions
+if ($LASTEXITCODE -ne 0) { throw "Receiver publish failed" }
 dotnet publish (Join-Path $PSScriptRoot "PasswallReceiver.Watchdog\PasswallReceiver.Watchdog.csproj") @publishOptions
+if ($LASTEXITCODE -ne 0) { throw "Watchdog publish failed" }
 
 Copy-Item (Join-Path $PSScriptRoot "install-startup.ps1") $stage
 Copy-Item (Join-Path $PSScriptRoot "Passwall.ico") $stage
@@ -82,3 +84,15 @@ $checksumLine = "$hash  $(Split-Path $archive -Leaf)`n"
 Write-Warning "Windows executables are unsigned; sign them before external distribution."
 Write-Host $archive
 Write-Host $checksum
+
+if (-not $FrameworkDependent) {
+    if ($Runtime -ne "win-x64") { throw "The graphical installer supports win-x64 only" }
+    $compiler = Join-Path ${env:ProgramFiles(x86)} "NSIS\makensis.exe"
+    if (-not (Test-Path $compiler)) { throw "Install NSIS 3 to build the graphical installer" }
+    $setup = Join-Path $dist "Passwall-Setup.exe"
+    & $compiler "/DVERSION=$version" "/DPAYLOAD=$stage" "/DOUTPUT=$setup" (Join-Path $PSScriptRoot "installer.nsi")
+    if ($LASTEXITCODE -ne 0) { throw "NSIS installer build failed" }
+    $setupHash = (Get-FileHash $setup -Algorithm SHA256).Hash.ToLowerInvariant()
+    [IO.File]::WriteAllText("$setup.sha256", "$setupHash  Passwall-Setup.exe`n", [Text.Encoding]::ASCII)
+    Write-Host $setup
+}
