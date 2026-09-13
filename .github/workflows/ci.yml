@@ -3,6 +3,13 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish the version in VERSION after both platform jobs pass
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -75,3 +82,33 @@ jobs:
             dist/Passwall-Windows-win-x64.zip.sha256
             dist/Passwall-Setup.exe
             dist/Passwall-Setup.exe.sha256
+
+  release:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_release
+    needs: [macos, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: Passwall-*
+          path: release-assets
+          merge-multiple: true
+      - name: Publish unsigned public alpha installers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v$(tr -d '\r\n' < VERSION)"
+          assets=(
+            release-assets/Passwall-Setup.exe
+            release-assets/Passwall-Setup.exe.sha256
+            release-assets/Passwall.pkg
+            release-assets/Passwall.pkg.sha256
+          )
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "${assets[@]}" --clobber
+          else
+            gh release create "$tag" --target "$GITHUB_SHA" --title "Passwall $tag Public Alpha" --prerelease --notes-file docs/RELEASE_NOTES.md "${assets[@]}"
+          fi
